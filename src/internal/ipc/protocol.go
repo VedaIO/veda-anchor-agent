@@ -19,7 +19,12 @@ type Response struct {
 	Error  string      `json:"error,omitempty"`
 }
 
-// GetIPCAddress returns the Windows Named Pipe address.
+// GetIPCAddress returns the Engine's pipe address.
 func GetIPCAddress() string {
 	return config.PipeName
+}
+
+// GetAgentIPCAddress returns the Agent's pipe address for UI connections.
+func GetAgentIPCAddress() string {
+	return config.AgentPipeName
 }

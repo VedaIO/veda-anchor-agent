@@ -4,16 +4,47 @@ package main
 
 import (
 	"log"
-	"veda-anchor-agent/src/internal/config"
-
-	"golang.org/x/sys/windows/svc"
+	"os"
+	"path/filepath"
+	"veda-anchor-agent/src/internal/ipc"
+	"veda-anchor-agent/src/internal/tracking"
 )
 
 func main() {
-	// veda-anchor-agent runs exclusively as a Windows Service.
-	// It is registered and started by the veda-anchor launcher (veda-anchor.exe).
-	err := svc.Run(config.ServiceName, &vedaAnchorService{})
-	if err != nil {
-		log.Fatalf("Service failed: %v", err)
+	// Setup logging
+	logDir := filepath.Join(os.Getenv("LocalAppData"), "VedaAnchor", "logs")
+	_ = os.MkdirAll(logDir, 0755)
+	
+	logPath := filepath.Join(logDir, "veda-anchor-agent.log")
+	logFile, _ := os.OpenFile(logPath, os.O_CREATE|os.O_APPEND|os.O_WRONLY, 0644)
+	if logFile != nil {
+		defer func() { _ = logFile.Close() }()
+		log.SetOutput(logFile)
 	}
+
+	log.Printf("=== VEDA ANCHOR AGENT STARTING ===")
+
+	// Connect to Engine IPC
+	engineClient, err := ipc.NewEngineClient()
+	if err != nil {
+		log.Printf("Failed to connect to Engine: %v", err)
+		log.Printf("Agent requires Engine to be running. Exiting.")
+		os.Exit(1)
+	}
+	log.Printf("Connected to Engine IPC")
+
+	// Start UI IPC Server (forwards to Engine)
+	uiServer := ipc.NewUIServer(engineClient)
+	go func() {
+		if err := uiServer.Start(); err != nil {
+			log.Printf("UI IPC server error: %v", err)
+		}
+	}()
+
+	// Start tracking (window + screentime)
+	tracking.Start(engineClient)
+
+	// Wait for exit signal
+	log.Printf("=== VEDA ANCHOR AGENT RUNNING ===")
+	select {}
 }

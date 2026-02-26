@@ -4,6 +4,7 @@
 package screentime
 
 /*
+#cgo LDFLAGS: -luser32
 #include "screentime_windows.h"
 */
 import "C"
@@ -29,6 +30,16 @@ func GetActiveWindowInfo() *WindowInfo {
 		PID:   uint32(cInfo.pid),
 		Title: title,
 	}
+}
+
+// GetForegroundPID returns just the PID of the foreground window.
+// Returns 0 if no foreground window.
+func GetForegroundPID() (uint32, error) {
+	info := GetActiveWindowInfo()
+	if info == nil {
+		return 0, nil
+	}
+	return info.PID, nil
 }
 
 func wcharToString(wchars []C.wchar_t) string {
