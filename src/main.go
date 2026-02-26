@@ -14,7 +14,7 @@ func main() {
 	// Setup logging
 	logDir := filepath.Join(os.Getenv("LocalAppData"), "VedaAnchor", "logs")
 	_ = os.MkdirAll(logDir, 0755)
-	
+
 	logPath := filepath.Join(logDir, "veda-anchor-agent.log")
 	logFile, _ := os.OpenFile(logPath, os.O_CREATE|os.O_APPEND|os.O_WRONLY, 0644)
 	if logFile != nil {

@@ -60,7 +60,15 @@ func (c *EngineClient) Request(method string, params interface{}) (json.RawMessa
 		return nil, fmt.Errorf("Engine error: %s", resp.Error)
 	}
 
-	return resp.Result, nil
+	if resp.Result == nil {
+		return nil, nil
+	}
+
+	resultBytes, err := json.Marshal(resp.Result)
+	if err != nil {
+		return nil, fmt.Errorf("failed to marshal result: %w", err)
+	}
+	return resultBytes, nil
 }
 
 func (c *EngineClient) Close() {

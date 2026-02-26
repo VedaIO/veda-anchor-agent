@@ -58,7 +58,7 @@ func (s *UIServer) handleConnection(conn net.Conn) {
 
 		// Forward to Engine and get response
 		result, err := s.forwardToEngine(req.Method, req.Params)
-		
+
 		resp := Response{ID: req.ID}
 		if err != nil {
 			resp.Error = err.Error()
