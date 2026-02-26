@@ -4,13 +4,13 @@ package main
 
 import (
 	"log"
-	"veda-anchor-engine/src/internal/config"
+	"veda-anchor-agent/src/internal/config"
 
 	"golang.org/x/sys/windows/svc"
 )
 
 func main() {
-	// veda-anchor-engine runs exclusively as a Windows Service.
+	// veda-anchor-agent runs exclusively as a Windows Service.
 	// It is registered and started by the veda-anchor launcher (veda-anchor.exe).
 	err := svc.Run(config.ServiceName, &vedaAnchorService{})
 	if err != nil {

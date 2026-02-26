@@ -24,13 +24,13 @@ func GetLogDir() (string, error) {
 	return filepath.Join(root, "logs"), nil
 }
 
-// GetLogPath returns the full path to the engine log file.
+// GetLogPath returns the full path to the agent log file.
 func GetLogPath() (string, error) {
 	dir, err := GetLogDir()
 	if err != nil {
 		return "", err
 	}
-	return filepath.Join(dir, "veda-anchor_engine.log"), nil
+	return filepath.Join(dir, "veda-anchor_agent.log"), nil
 }
 
 // GetNativeHostLogPath returns the full path to the native messaging host log file.

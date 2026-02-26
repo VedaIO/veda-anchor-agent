@@ -3,10 +3,10 @@ package api
 import (
 	"database/sql"
 	"sync"
-	"veda-anchor-engine/src/internal/data/logger"
-	"veda-anchor-engine/src/internal/data/repository"
-	"veda-anchor-engine/src/internal/platform/nativehost"
-	"veda-anchor-engine/src/internal/service/icon"
+	"veda-anchor-agent/src/internal/data/logger"
+	"veda-anchor-agent/src/internal/data/repository"
+	"veda-anchor-agent/src/internal/platform/nativehost"
+	"veda-anchor-agent/src/internal/service/icon"
 )
 
 // Server holds the dependencies for the API server, such as the database connection and the logger.

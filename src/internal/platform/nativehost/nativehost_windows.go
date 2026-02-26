@@ -9,8 +9,8 @@ import (
 	"path/filepath"
 
 	"golang.org/x/sys/windows/registry"
-	"veda-anchor-engine/src/internal/config"
-	"veda-anchor-engine/src/internal/data/logger"
+	"veda-anchor-agent/src/internal/config"
+	"veda-anchor-agent/src/internal/data/logger"
 )
 
 const (

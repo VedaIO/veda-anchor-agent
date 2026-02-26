@@ -1,6 +1,6 @@
-# Veda Anchor Engine
+# Veda Anchor Agent
 
-The engine that powers [VedaAnchor](https://github.com/VedaIO/veda-anchor)
+The user-level process that aids [VedaAnchor](https://github.com/VedaIO/veda-anchor-agent)
 
 # Build
 

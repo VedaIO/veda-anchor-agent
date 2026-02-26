@@ -2,11 +2,11 @@ package screentime
 
 import (
 	"time"
-	"veda-anchor-engine/src/internal/data/logger"
-	"veda-anchor-engine/src/internal/data/repository"
-	"veda-anchor-engine/src/internal/platform/app_filter"
-	"veda-anchor-engine/src/internal/platform/proc_sensing"
-	platformScreentime "veda-anchor-engine/src/internal/platform/screentime"
+	"veda-anchor-agent/src/internal/data/logger"
+	"veda-anchor-agent/src/internal/data/repository"
+	"veda-anchor-agent/src/internal/platform/app_filter"
+	"veda-anchor-agent/src/internal/platform/proc_sensing"
+	platformScreentime "veda-anchor-agent/src/internal/platform/screentime"
 )
 
 const (

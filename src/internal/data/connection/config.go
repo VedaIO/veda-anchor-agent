@@ -6,7 +6,7 @@ import (
 	"log"
 	"os"
 	"path/filepath"
-	"veda-anchor-engine/src/internal/config"
+	"veda-anchor-agent/src/internal/config"
 
 	_ "modernc.org/sqlite"
 )

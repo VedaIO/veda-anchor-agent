@@ -6,8 +6,8 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
-	"veda-anchor-engine/src/internal/config"
-	"veda-anchor-engine/src/internal/platform/blocklistlock"
+	"veda-anchor-agent/src/internal/config"
+	"veda-anchor-agent/src/internal/platform/blocklistlock"
 )
 
 // LoadAppBlocklist reads the blocklist file from the user's cache directory.

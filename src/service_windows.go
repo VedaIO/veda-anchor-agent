@@ -6,14 +6,14 @@ import (
 	"log"
 	"os"
 	"path/filepath"
-	"veda-anchor-engine/src/api"
-	"veda-anchor-engine/src/internal/app/screentime"
-	"veda-anchor-engine/src/internal/config"
-	"veda-anchor-engine/src/internal/data"
-	"veda-anchor-engine/src/internal/data/logger"
-	"veda-anchor-engine/src/internal/ipc"
-	"veda-anchor-engine/src/internal/monitoring"
-	"veda-anchor-engine/src/internal/platform/nativehost"
+	"veda-anchor-agent/src/api"
+	"veda-anchor-agent/src/internal/app/screentime"
+	"veda-anchor-agent/src/internal/config"
+	"veda-anchor-agent/src/internal/data"
+	"veda-anchor-agent/src/internal/data/logger"
+	"veda-anchor-agent/src/internal/ipc"
+	"veda-anchor-agent/src/internal/monitoring"
+	"veda-anchor-agent/src/internal/platform/nativehost"
 
 	"golang.org/x/sys/windows/svc"
 )
@@ -39,7 +39,7 @@ func (s *vedaAnchorService) Execute(args []string, r <-chan svc.ChangeRequest, c
 		log.SetOutput(logFile)
 	}
 
-	log.Printf("=== %s ENGINE SERVICE STARTING ===", config.AppName)
+	log.Printf("=== %s AGENT SERVICE STARTING ===", config.AppName)
 
 	// Initialize core
 	db, err := data.InitDB()
@@ -67,7 +67,7 @@ func (s *vedaAnchorService) Execute(args []string, r <-chan svc.ChangeRequest, c
 	// Start IPC Server in background
 	ipcServer := ipc.NewServer(server)
 	go func() {
-		log.Printf("%s Engine is starting IPC Server...", config.AppName)
+		log.Printf("%s Agent is starting IPC Server...", config.AppName)
 		if err := ipcServer.Start(); err != nil {
 			log.Printf("IPC server error: %v", err)
 		}
@@ -75,14 +75,14 @@ func (s *vedaAnchorService) Execute(args []string, r <-chan svc.ChangeRequest, c
 
 	// Service is now running
 	changes <- svc.Status{State: svc.Running, Accepts: cmdsAccepted}
-	log.Printf("=== %s ENGINE SERVICE RUNNING ===", config.AppName)
+	log.Printf("=== %s AGENT SERVICE RUNNING ===", config.AppName)
 
 	// Wait for stop/shutdown signal
 	for {
 		c := <-r
 		switch c.Cmd {
 		case svc.Stop, svc.Shutdown:
-			log.Printf("=== %s ENGINE SERVICE STOPPING ===", config.AppName)
+			log.Printf("=== %s AGENT SERVICE STOPPING ===", config.AppName)
 			changes <- svc.Status{State: svc.StopPending}
 			// Cleanup
 			l.Close()

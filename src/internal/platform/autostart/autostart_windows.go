@@ -5,15 +5,15 @@ package autostart
 import (
 	"fmt"
 	"os"
-	"veda-anchor-engine/src/internal/config"
+	"veda-anchor-agent/src/internal/config"
 
 	"golang.org/x/sys/windows/svc"
 	"golang.org/x/sys/windows/svc/mgr"
 )
 
-const serviceName = "VedaAnchorEngine"
+const serviceName = "VedaAnchorAgent"
 
-// EnsureAutostart enables automatic startup for the VedaAnchorEngine  Windows Service.
+// EnsureAutostart enables automatic startup for the VedaAnchorAgent  Windows Service.
 // This sets the service StartType to Automatic so it starts on boot.
 func EnsureAutostart() (string, error) {
 	m, err := mgr.Connect()
@@ -52,7 +52,7 @@ func EnsureAutostart() (string, error) {
 	return "", nil
 }
 
-// RemoveAutostart disables automatic startup for the VedaAnchorEngine  Windows Service.
+// RemoveAutostart disables automatic startup for the VedaAnchorAgent  Windows Service.
 // This sets the service StartType to Disabled.
 func RemoveAutostart() error {
 	m, err := mgr.Connect()
@@ -92,7 +92,7 @@ func RemoveAutostart() error {
 	return nil
 }
 
-// GetServiceStartType queries the SCM for the current start type of the VedaAnchorEngine  service.
+// GetServiceStartType queries the SCM for the current start type of the VedaAnchorAgent  service.
 // Returns true if the service is set to start automatically.
 func GetServiceStartType() (bool, error) {
 	m, err := mgr.Connect()
@@ -115,7 +115,7 @@ func GetServiceStartType() (bool, error) {
 	return cfg.StartType == mgr.StartAutomatic, nil
 }
 
-// StopAndDeleteService stops and deletes the VedaAnchorEngine  service.
+// StopAndDeleteService stops and deletes the VedaAnchorAgent service.
 // Used during uninstall.
 func StopAndDeleteService() error {
 	m, err := mgr.Connect()

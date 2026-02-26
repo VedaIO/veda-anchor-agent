@@ -6,7 +6,7 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
-	"veda-anchor-engine/src/internal/config"
+	"veda-anchor-agent/src/internal/config"
 )
 
 // LoadWebBlocklist reads the web blocklist file from the user's cache directory.

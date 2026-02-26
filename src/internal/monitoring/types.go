@@ -2,7 +2,7 @@ package monitoring
 
 import (
 	"time"
-	"veda-anchor-engine/src/internal/platform/proc_sensing"
+	"veda-anchor-agent/src/internal/platform/proc_sensing"
 )
 
 // ProcessSnapshot represents a point-in-time capture of all running processes.

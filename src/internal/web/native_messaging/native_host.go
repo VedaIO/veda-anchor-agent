@@ -9,10 +9,10 @@ import (
 	"path/filepath"
 	"runtime/debug"
 	"time"
-	"veda-anchor-engine/src/internal/config"
-	"veda-anchor-engine/src/internal/data"
-	"veda-anchor-engine/src/internal/data/repository"
-	"veda-anchor-engine/src/internal/data/write"
+	"veda-anchor-agent/src/internal/config"
+	"veda-anchor-agent/src/internal/data"
+	"veda-anchor-agent/src/internal/data/repository"
+	"veda-anchor-agent/src/internal/data/write"
 )
 
 // Run starts the native messaging host loop. It sets up logging, initializes the database,

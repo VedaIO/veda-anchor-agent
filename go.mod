@@ -1,4 +1,4 @@
-module veda-anchor-engine
+module veda-anchor-agent
 
 go 1.26.0
 

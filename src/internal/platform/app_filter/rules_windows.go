@@ -4,10 +4,10 @@ package app_filter
 
 import (
 	"strings"
-	"veda-anchor-engine/src/internal/platform/executable"
-	"veda-anchor-engine/src/internal/platform/proc_sensing"
-	"veda-anchor-engine/src/internal/platform/process_integrity"
-	"veda-anchor-engine/src/internal/platform/window"
+	"veda-anchor-agent/src/internal/platform/executable"
+	"veda-anchor-agent/src/internal/platform/proc_sensing"
+	"veda-anchor-agent/src/internal/platform/process_integrity"
+	"veda-anchor-agent/src/internal/platform/window"
 )
 
 // ShouldExclude returns true if the process is a Windows system component, conhost.exe, or Veda Anchor itself.

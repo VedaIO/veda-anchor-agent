@@ -6,10 +6,10 @@ import (
 	"sync"
 	"time"
 
-	"veda-anchor-engine/src/internal/data/logger"
-	"veda-anchor-engine/src/internal/data/repository"
-	"veda-anchor-engine/src/internal/platform/app_filter"
-	"veda-anchor-engine/src/internal/platform/proc_sensing"
+	"veda-anchor-agent/src/internal/data/logger"
+	"veda-anchor-agent/src/internal/data/repository"
+	"veda-anchor-agent/src/internal/platform/app_filter"
+	"veda-anchor-agent/src/internal/platform/proc_sensing"
 )
 
 // ProcessEventSubscriber is a subscriber that tracks process start and end events.

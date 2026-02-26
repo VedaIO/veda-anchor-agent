@@ -6,9 +6,9 @@ import (
 	"time"
 
 	"os"
-	"veda-anchor-engine/src/internal/blocklist/app"
-	"veda-anchor-engine/src/internal/data/logger"
-	"veda-anchor-engine/src/internal/platform/proc_sensing"
+	"veda-anchor-agent/src/internal/blocklist/app"
+	"veda-anchor-agent/src/internal/data/logger"
+	"veda-anchor-agent/src/internal/platform/proc_sensing"
 )
 
 const blocklistEnforceInterval = 2 * time.Second

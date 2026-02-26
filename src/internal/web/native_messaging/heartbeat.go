@@ -5,7 +5,7 @@ import (
 	"os"
 	"path/filepath"
 	"time"
-	"veda-anchor-engine/src/internal/config"
+	"veda-anchor-agent/src/internal/config"
 )
 
 // updateHeartbeat updates a local file with the current timestamp.

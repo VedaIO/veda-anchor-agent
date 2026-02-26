@@ -4,7 +4,7 @@ import (
 	"os"
 	"path/filepath"
 	"runtime"
-	"veda-anchor-engine/src/internal/platform/nativehost"
+	"veda-anchor-agent/src/internal/platform/nativehost"
 )
 
 // EnsureExtensionInstalled checks if the extension is installed and installs it if not.

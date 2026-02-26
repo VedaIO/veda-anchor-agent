@@ -5,7 +5,7 @@ const (
 	AppName = "VedaAnchor"
 
 	// ServiceName is the Windows Service name
-	ServiceName = "VedaAnchorEngine"
+	ServiceName = "VedaAnchorAgent"
 
 	// PipeName is the named pipe address for IPC
 	PipeName = `\\.\pipe\veda-anchor`

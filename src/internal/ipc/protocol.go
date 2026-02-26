@@ -2,7 +2,7 @@ package ipc
 
 import (
 	"encoding/json"
-	"veda-anchor-engine/src/internal/config"
+	"veda-anchor-agent/src/internal/config"
 )
 
 // Request is a message received from the client.

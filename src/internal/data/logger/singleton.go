@@ -6,7 +6,7 @@ import (
 	"os"
 	"path/filepath"
 	"sync"
-	"veda-anchor-engine/src/internal/config"
+	"veda-anchor-agent/src/internal/config"
 )
 
 var defaultLogger Logger

@@ -1,8 +1,8 @@
 package monitoring
 
 import (
-	"veda-anchor-engine/src/internal/data/logger"
-	"veda-anchor-engine/src/internal/data/repository"
+	"veda-anchor-agent/src/internal/data/logger"
+	"veda-anchor-agent/src/internal/data/repository"
 )
 
 // StartDefault creates and starts a monitoring manager with all standard subscribers wired up.

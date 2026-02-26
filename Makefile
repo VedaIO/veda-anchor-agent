@@ -1,4 +1,4 @@
-# Makefile for Veda Anchor Engine
+# Makefile for Veda Anchor Agent
 
 VERSION ?= $(shell git describe --tags --always --dirty --first-parent 2>/dev/null || echo "dev")
 
@@ -10,8 +10,8 @@ generate:
 	cd src && go generate
 
 build: generate
-	@echo "Building Veda Anchor Engine for windows..."
-	CGO_ENABLED=1 CC="zig cc -target x86_64-windows-gnu -Wl,--subsystem,windows" GOOS=windows GOARCH=amd64 go build -ldflags="-w -H=windowsgui -X main.Version=$(VERSION)" -o ./bin/veda-anchor-engine.exe ./src/
+	@echo "Building Veda Anchor Agent for windows..."
+	CGO_ENABLED=1 CC="zig cc -target x86_64-windows-gnu -Wl,--subsystem,windows" GOOS=windows GOARCH=amd64 go build -ldflags="-w -H=windowsgui -X main.Version=$(VERSION)" -o ./bin/veda-anchor-agent.exe ./src/
 
 fmt:
 	@echo "Formatting code..."
@@ -22,6 +22,6 @@ lint:
 
 clean:
 	@echo "Cleaning..."
-	rm -rf ./bin/veda-anchor-engine.exe
+	rm -rf ./bin/veda-anchor-agent.exe
 	rm -f src/resource.syso
 
