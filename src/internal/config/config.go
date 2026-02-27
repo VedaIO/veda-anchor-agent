@@ -20,6 +20,14 @@ func NewConfig() *Config {
 	return &Config{}
 }
 
+// ProgramFiles returns the Program Files directory.
+func ProgramFiles() string {
+	if pf := os.Getenv("ProgramFiles"); pf != "" {
+		return pf
+	}
+	return "C:\\Program Files"
+}
+
 // GetConfigPath returns the path to the configuration file.
 func GetConfigPath() (string, error) {
 	dir, err := GetConfigDir()
