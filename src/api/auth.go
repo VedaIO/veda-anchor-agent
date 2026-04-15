@@ -1,9 +1,7 @@
 package api
 
 import (
-	"fmt"
-	"veda-anchor-agent/src/internal/auth"
-	"veda-anchor-agent/src/internal/config"
+	"encoding/json"
 )
 
 // GetIsAuthenticated checks if the user is authenticated.
@@ -21,53 +19,35 @@ func (s *Server) Logout() {
 }
 
 // HasPassword checks if a password has been set for the application.
-func (s *Server) HasPassword() (bool, error) {
-	cfg, err := config.LoadConfig()
-	if err != nil {
-		return false, err
-	}
-	return cfg.PasswordHash != "", nil
+func (s *Server) HasPassword() (json.RawMessage, error) {
+	return s.engine.Request("HasPassword", nil)
 }
 
 // Login handles the user login.
-func (s *Server) Login(password string) (bool, error) {
-	cfg, err := config.LoadConfig()
+func (s *Server) Login(password string) (json.RawMessage, error) {
+	result, err := s.engine.Request("Login", map[string]string{"password": password})
 	if err != nil {
-		return false, err
+		return nil, err
 	}
 
-	if auth.CheckPasswordHash(password, cfg.PasswordHash) {
+	// If login succeeded, set local auth state
+	var success bool
+	json.Unmarshal(result, &success)
+	if success {
 		s.Mu.Lock()
 		s.IsAuthenticated = true
 		s.Mu.Unlock()
-		return true, nil
 	}
-	return false, nil
+	return result, nil
 }
 
 // SetPassword handles the initial password setup.
 func (s *Server) SetPassword(password string) error {
-	cfg, err := config.LoadConfig()
-	if err != nil {
-		return err
+	_, err := s.engine.Request("SetPassword", map[string]string{"password": password})
+	if err == nil {
+		s.Mu.Lock()
+		s.IsAuthenticated = true
+		s.Mu.Unlock()
 	}
-
-	if cfg.PasswordHash != "" {
-		return fmt.Errorf("password already set")
-	}
-
-	hash, err := auth.HashPassword(password)
-	if err != nil {
-		return err
-	}
-
-	cfg.PasswordHash = hash
-	if err := cfg.Save(); err != nil {
-		return err
-	}
-
-	s.Mu.Lock()
-	s.IsAuthenticated = true
-	s.Mu.Unlock()
-	return nil
+	return err
 }

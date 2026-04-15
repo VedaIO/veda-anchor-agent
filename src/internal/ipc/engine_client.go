@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"log"
 	"net"
+	"sync"
 	"time"
 
 	"veda-anchor-agent/src/internal/config"
@@ -16,6 +17,7 @@ import (
 
 type EngineClient struct {
 	conn net.Conn
+	mu   sync.Mutex
 }
 
 func NewEngineClient() (*EngineClient, error) {
@@ -32,6 +34,8 @@ func NewEngineClient() (*EngineClient, error) {
 }
 
 func (c *EngineClient) Request(method string, params interface{}) (json.RawMessage, error) {
+	c.mu.Lock()
+	defer c.mu.Unlock()
 	id := generateID()
 	paramsJSON, _ := json.Marshal(params)
 

@@ -6,6 +6,7 @@ import (
 	"log"
 	"os"
 	"path/filepath"
+	"veda-anchor-agent/src/api"
 	"veda-anchor-agent/src/internal/ipc"
 	"veda-anchor-agent/src/internal/tracking"
 )
@@ -32,6 +33,10 @@ func main() {
 		os.Exit(1)
 	}
 	log.Printf("Connected to Engine IPC")
+
+	// Initialize API server
+	apiServer := api.NewServer(engineClient)
+	_ = apiServer // Will be used in Phase 2 for UIServer dispatch
 
 	// Start UI IPC Server (forwards to Engine)
 	uiServer := ipc.NewUIServer(engineClient)
