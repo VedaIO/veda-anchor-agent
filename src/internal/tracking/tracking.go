@@ -8,8 +8,8 @@ import (
 	"time"
 
 	"veda-anchor-agent/src/internal/ipc"
-	"veda-anchor-agent/src/internal/platform/window"
 	"veda-anchor-agent/src/internal/platform/screentime"
+	"veda-anchor-agent/src/internal/platform/window"
 )
 
 var (
@@ -75,7 +75,7 @@ func periodicFlush(client *ipc.EngineClient) {
 func sendScreenTimeUpdate(client *ipc.EngineClient, pid uint32, seconds int64) {
 	log.Printf("[Tracking] Sending screentime: PID=%d, Seconds=%d", pid, seconds)
 
-	params := map[string]interface{}{
+	params := map[string]any{
 		"pid":     pid,
 		"seconds": seconds,
 	}

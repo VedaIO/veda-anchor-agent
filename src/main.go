@@ -34,12 +34,11 @@ func main() {
 	}
 	log.Printf("Connected to Engine IPC")
 
-	// Initialize API server
+	// Initialize API server (handles local + forwarded methods)
 	apiServer := api.NewServer(engineClient)
-	_ = apiServer // Will be used in Phase 2 for UIServer dispatch
 
-	// Start UI IPC Server (forwards to Engine)
-	uiServer := ipc.NewUIServer(engineClient)
+	// Start UI IPC Server (dispatches through apiServer)
+	uiServer := ipc.NewUIServer(apiServer)
 	go func() {
 		if err := uiServer.Start(); err != nil {
 			log.Printf("UI IPC server error: %v", err)

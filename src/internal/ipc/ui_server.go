@@ -18,16 +18,16 @@ import (
 )
 
 type UIServer struct {
-	engineClient *EngineClient
-	uiExePath    string
+	handler   RequestHandler
+	uiExePath string
 }
 
-func NewUIServer(engineClient *EngineClient) *UIServer {
+func NewUIServer(handler RequestHandler) *UIServer {
 	uiPath := filepath.Join(config.ProgramFiles(), "VedaAnchor", "veda-anchor-ui.exe")
 
 	return &UIServer{
-		engineClient: engineClient,
-		uiExePath:    uiPath,
+		handler:   handler,
+		uiExePath: uiPath,
 	}
 }
 
@@ -118,31 +118,12 @@ func (s *UIServer) handleConnection(conn net.Conn) {
 			return
 		}
 
-		result, err := s.forwardToEngine(req.Method, req.Params)
-
-		resp := Response{ID: req.ID}
-		if err != nil {
-			resp.Error = err.Error()
-		} else {
-			resp.Result = result
-		}
+		resp := s.handler.Dispatch(req.Method, req.Params)
+		resp.ID = req.ID
 
 		if err := encoder.Encode(resp); err != nil {
 			log.Printf("[Agent] Error encoding response: %v", err)
 			return
 		}
 	}
-}
-
-func (s *UIServer) forwardToEngine(method string, params json.RawMessage) (interface{}, error) {
-	var paramsObj interface{}
-	if len(params) > 0 {
-		json.Unmarshal(params, &paramsObj)
-	}
-
-	result, err := s.engineClient.Request(method, paramsObj)
-	if err != nil {
-		return nil, err
-	}
-	return result, nil
 }

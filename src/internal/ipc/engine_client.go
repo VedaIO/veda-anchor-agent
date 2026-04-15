@@ -33,7 +33,7 @@ func NewEngineClient() (*EngineClient, error) {
 	return &EngineClient{conn: conn}, nil
 }
 
-func (c *EngineClient) Request(method string, params interface{}) (json.RawMessage, error) {
+func (c *EngineClient) Request(method string, params any) (json.RawMessage, error) {
 	c.mu.Lock()
 	defer c.mu.Unlock()
 	id := generateID()
