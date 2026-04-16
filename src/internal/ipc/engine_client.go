@@ -75,6 +75,11 @@ func (c *EngineClient) Request(method string, params any) (json.RawMessage, erro
 	return resultBytes, nil
 }
 
+func (c *EngineClient) Ping() error {
+	_, err := c.Request("Ping", nil)
+	return err
+}
+
 func (c *EngineClient) Close() {
 	if c.conn != nil {
 		c.conn.Close()

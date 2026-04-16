@@ -7,34 +7,32 @@ import (
 	"fmt"
 	"log"
 	"net"
-	"path/filepath"
-	"syscall"
-	"unsafe"
 
 	"veda-anchor-agent/src/internal/config"
 
 	"github.com/Microsoft/go-winio"
-	"golang.org/x/sys/windows"
 )
 
 type UIServer struct {
-	handler   RequestHandler
-	uiExePath string
+	handler RequestHandler
 }
 
 func NewUIServer(handler RequestHandler) *UIServer {
-	uiPath := filepath.Join(config.ProgramFiles(), "VedaAnchor", "veda-anchor-ui.exe")
-
 	return &UIServer{
-		handler:   handler,
-		uiExePath: uiPath,
+		handler: handler,
 	}
 }
 
 func (s *UIServer) Start() error {
 	address := config.AgentPipeName
 
-	pc := &winio.PipeConfig{}
+	// Security: Use DACL to restrict pipe access at the kernel level.
+	// SY = SYSTEM, BA = Built-in Administrators, AU = Authenticated Users.
+	// This is the industry-standard approach — the kernel enforces who can connect,
+	// rather than fragile process-path validation after the fact.
+	pc := &winio.PipeConfig{
+		SecurityDescriptor: "D:(A;;GA;;;SY)(A;;GA;;;BA)(A;;GA;;;AU)",
+	}
 	listener, err := winio.ListenPipe(address, pc)
 	if err != nil {
 		return fmt.Errorf("failed to listen on %s: %w", address, err)
@@ -50,59 +48,8 @@ func (s *UIServer) Start() error {
 			continue
 		}
 
-		if !s.validateClient(conn) {
-			log.Printf("[Agent] Rejected connection from unverified client")
-			conn.Close()
-			continue
-		}
-
 		go s.handleConnection(conn)
 	}
-}
-
-func (s *UIServer) validateClient(conn net.Conn) bool {
-	connVal, ok := conn.(interface{ Handle() windows.Handle })
-	if !ok {
-		log.Printf("[Agent] Cannot get handle from connection type")
-		return false
-	}
-
-	handle := connVal.Handle()
-	var pid uint32
-	ret, _, _ := syscall.NewLazyDLL("kernel32.dll").NewProc("GetNamedPipeClientProcessId").Call(
-		uintptr(handle),
-		uintptr(unsafe.Pointer(&pid)),
-	)
-	if ret == 0 {
-		log.Printf("[Agent] GetNamedPipeClientProcessId failed")
-		return false
-	}
-
-	exePath, err := queryProcessPath(pid)
-	if err != nil {
-		log.Printf("[Agent] Failed to query client process path: %v", err)
-		return false
-	}
-
-	log.Printf("[Agent] Client connected from: %s", exePath)
-	return exePath == s.uiExePath
-}
-
-func queryProcessPath(pid uint32) (string, error) {
-	h, err := windows.OpenProcess(windows.PROCESS_QUERY_LIMITED_INFORMATION, false, pid)
-	if err != nil {
-		return "", err
-	}
-	defer windows.CloseHandle(h)
-
-	var pathBuf [windows.MAX_PATH]uint16
-	pathLen := uint32(len(pathBuf))
-	err = windows.QueryFullProcessImageName(h, 0, &pathBuf[0], &pathLen)
-	if err != nil {
-		return "", err
-	}
-
-	return windows.UTF16ToString(pathBuf[:pathLen]), nil
 }
 
 func (s *UIServer) handleConnection(conn net.Conn) {
@@ -127,3 +74,4 @@ func (s *UIServer) handleConnection(conn net.Conn) {
 		}
 	}
 }
+
