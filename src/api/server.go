@@ -44,11 +44,11 @@ func (s *Server) GetWebDetails(domain string) (json.RawMessage, error) {
 }
 
 func (s *Server) CheckChromeExtension() bool {
-	cacheDir, err := os.UserCacheDir()
-	if err != nil {
-		return false
+	progData := os.Getenv("ProgramData")
+	if progData == "" {
+		progData = `C:\ProgramData`
 	}
-	heartbeatPath := filepath.Join(cacheDir, "VedaAnchor", "extension_heartbeat")
+	heartbeatPath := filepath.Join(progData, "VedaAnchor", "extension_heartbeat")
 	content, err := os.ReadFile(heartbeatPath)
 	if err != nil {
 		return false

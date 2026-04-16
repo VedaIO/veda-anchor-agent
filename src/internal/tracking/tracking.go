@@ -10,6 +10,8 @@ import (
 	"veda-anchor-agent/src/internal/ipc"
 	"veda-anchor-agent/src/internal/platform/screentime"
 	"veda-anchor-agent/src/internal/platform/window"
+
+	"golang.org/x/sys/windows"
 )
 
 var (
@@ -50,11 +52,44 @@ func trackForegroundWindow(client *ipc.EngineClient) {
 				}
 				lastPID = pid
 				pendingSecs = 0
+
+				// Report new active app to engine (creates initial screen_time record)
+				if exePath, err := getExePathByPID(pid); err == nil && exePath != "" {
+					reportActiveApp(client, pid, exePath)
+				}
 			}
 			pendingSecs++
 		}
 		lastCheck = time.Now()
 		stateMu.Unlock()
+	}
+}
+
+func getExePathByPID(pid uint32) (string, error) {
+	h, err := windows.OpenProcess(windows.PROCESS_QUERY_LIMITED_INFORMATION, false, pid)
+	if err != nil {
+		return "", err
+	}
+	defer windows.CloseHandle(h)
+
+	var pathBuf [windows.MAX_PATH]uint16
+	pathLen := uint32(len(pathBuf))
+	err = windows.QueryFullProcessImageName(h, 0, &pathBuf[0], &pathLen)
+	if err != nil {
+		return "", err
+	}
+	return windows.UTF16ToString(pathBuf[:pathLen]), nil
+}
+
+func reportActiveApp(client *ipc.EngineClient, pid uint32, exePath string) {
+	log.Printf("[Tracking] Reporting active app: PID=%d, ExePath=%s", pid, exePath)
+	params := map[string]any{
+		"pid":     pid,
+		"exePath": exePath,
+	}
+	_, err := client.Request("ReportActiveApp", params)
+	if err != nil {
+		log.Printf("[Tracking] Failed to report active app: %v", err)
 	}
 }
 
