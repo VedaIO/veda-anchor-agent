@@ -6,15 +6,25 @@ import (
 	"log"
 	"os"
 	"path/filepath"
+	"strings"
 	"time"
 
 	"veda-anchor-agent/src/api"
 	"veda-anchor-agent/src/internal/config"
 	"veda-anchor-agent/src/internal/ipc"
 	"veda-anchor-agent/src/internal/tracking"
+	"veda-anchor-agent/src/internal/web/native_messaging"
 )
 
 func main() {
+	// Check if started as Chrome Native Messaging Host
+	for _, arg := range os.Args[1:] {
+		if strings.HasPrefix(arg, "chrome-extension://") {
+			native_messaging.Run()
+			return
+		}
+	}
+
 	// Setup logging (use ProgramData for shared access)
 	logPath, err := config.GetLogPath()
 	if err != nil {

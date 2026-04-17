@@ -74,4 +74,3 @@ func (s *UIServer) handleConnection(conn net.Conn) {
 		}
 	}
 }
-

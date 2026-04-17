@@ -21,6 +21,14 @@ var (
 	stateMu     sync.Mutex
 )
 
+// Reset clears the internal tracking state (used when history is cleared).
+func Reset() {
+	stateMu.Lock()
+	defer stateMu.Unlock()
+	lastPID = 0
+	pendingSecs = 0
+}
+
 func Start(engineClient *ipc.EngineClient) {
 	log.Println("[Tracking] Starting window and screentime tracking")
 

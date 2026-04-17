@@ -7,11 +7,12 @@ import (
 // --- Types ---
 
 type AppLeaderboardItem struct {
-	Rank        int    `json:"rank"`
-	Name        string `json:"name"`        // Display name (commercial name if available)
-	ProcessName string `json:"processName"` // Actual process name for blocking
-	Icon        string `json:"icon"`
-	Count       int    `json:"count"`
+	Rank           int    `json:"rank"`
+	Name           string `json:"name"`           // Display name (commercial name if available)
+	ProcessName    string `json:"processName"`    // Actual process name for blocking
+	ExecutablePath string `json:"executablePath"` // Used locally for icon enrichment
+	Icon           string `json:"icon"`
+	Count          int    `json:"count"`
 }
 
 type WebLeaderboardItem struct {

@@ -3,6 +3,7 @@ package api
 import (
 	"encoding/json"
 	"veda-anchor-agent/src/internal/ipc"
+	"veda-anchor-agent/src/internal/tracking"
 )
 
 func (s *Server) Dispatch(method string, params json.RawMessage) ipc.Response {
@@ -45,6 +46,61 @@ func (s *Server) Dispatch(method string, params json.RawMessage) ipc.Response {
 		}
 		json.Unmarshal(params, &p)
 		err = s.SetPassword(p.Password)
+
+	case "ClearAppHistory":
+		var p struct {
+			Password string `json:"password"`
+		}
+		json.Unmarshal(params, &p)
+		err = s.ClearAppHistory(p.Password)
+		if err == nil {
+			tracking.Reset()
+		}
+
+	case "GetAppLeaderboard":
+		var p struct {
+			Since string `json:"since"`
+			Until string `json:"until"`
+		}
+		json.Unmarshal(params, &p)
+		raw, fwdErr := s.GetAppLeaderboard(p.Since, p.Until)
+		if fwdErr != nil {
+			return ipc.Response{Error: fwdErr.Error()}
+		}
+		// Enrich icons
+		var items []AppLeaderboardItem
+		if err := json.Unmarshal(raw, &items); err == nil {
+			for i := range items {
+				details := s.icons.GetAppDetails(items[i].ExecutablePath)
+				if details.CommercialName != "" {
+					items[i].Name = details.CommercialName
+				}
+				items[i].Icon = details.IconBase64
+			}
+			enriched, _ := json.Marshal(items)
+			return ipc.Response{Result: json.RawMessage(enriched)}
+		}
+		return ipc.Response{Result: raw}
+
+	case "GetScreenTime":
+		raw, fwdErr := s.GetScreenTime()
+		if fwdErr != nil {
+			return ipc.Response{Error: fwdErr.Error()}
+		}
+		// Enrich icons
+		var items []ScreenTimeItem
+		if err := json.Unmarshal(raw, &items); err == nil {
+			for i := range items {
+				details := s.icons.GetAppDetails(items[i].ExecutablePath)
+				if details.CommercialName != "" {
+					items[i].Name = details.CommercialName
+				}
+				items[i].Icon = details.IconBase64
+			}
+			enriched, _ := json.Marshal(items)
+			return ipc.Response{Result: json.RawMessage(enriched)}
+		}
+		return ipc.Response{Result: raw}
 
 	// --- Everything else: forward to engine ---
 
