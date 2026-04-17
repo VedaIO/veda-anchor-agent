@@ -73,7 +73,7 @@ func InstallNativeHost(exePath, extensionId string) error {
 // CreateManifest creates the native messaging host manifest file.
 // This file tells browsers how to communicate with the native application.
 func CreateManifest(manifestPath, exePath, extensionId string) error {
-	manifest := map[string]interface{}{
+	manifest := map[string]any{
 		"name":        HostName,
 		"description": "Anchor native messaging host",
 		"path":        exePath,
@@ -114,10 +114,16 @@ func RegisterExtension(extensionId string) error {
 
 // Remove removes the native messaging host configuration from the system.
 func Remove() error {
-	// Delete the registry key for the native messaging host.
-	keyPath := `SOFTWARE\Google\Chrome\NativeMessagingHosts\` + HostName
-	if err := registry.DeleteKey(registry.CURRENT_USER, keyPath); err != nil && err != registry.ErrNotExist {
-		return err
+	browsers := []string{
+		`SOFTWARE\Google\Chrome\NativeMessagingHosts\` + HostName,
+		`SOFTWARE\Microsoft\Edge\NativeMessagingHosts\` + HostName,
+		`SOFTWARE\Mozilla\NativeMessagingHosts\` + HostName,
+	}
+
+	for _, keyPath := range browsers {
+		if err := registry.DeleteKey(registry.CURRENT_USER, keyPath); err != nil && err != registry.ErrNotExist {
+			log.Printf("Failed to delete registry key %s: %v", keyPath, err)
+		}
 	}
 
 	// Delete the manifest file.

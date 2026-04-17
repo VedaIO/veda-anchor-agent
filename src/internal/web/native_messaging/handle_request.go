@@ -23,7 +23,11 @@ func handleRequest(req Request, engine *ipc.EngineClient) {
 		}
 
 		log.Printf("Logging URL: %s", payload.Url)
-		_, err := engine.Request("LogWebEvent", payload.Url)
+		_, err := engine.Request("LogWebEvent", map[string]any{
+			"url":       payload.Url,
+			"title":     payload.Title,
+			"visitTime": payload.VisitTime,
+		})
 		if err != nil {
 			log.Printf("Error logging web event IPC: %v", err)
 		}
@@ -46,20 +50,25 @@ func handleRequest(req Request, engine *ipc.EngineClient) {
 		}
 
 	case "get_web_blocklist":
-		// Send blocklist via IPC
-		var bl []string
+		type blockedWebsite struct {
+			Domain  string `json:"domain"`
+			Title   string `json:"title"`
+			IconURL string `json:"iconURL"`
+		}
+		var rawList []blockedWebsite
 		resBytes, err := engine.Request("GetWebBlocklist", nil)
 		if err != nil {
 			log.Printf("Error loading blocklist IPC: %v", err)
 		} else if resBytes != nil {
-			json.Unmarshal(resBytes, &bl)
+			json.Unmarshal(resBytes, &rawList)
 		}
-		if bl == nil {
-			bl = []string{}
+		domains := make([]string, 0, len(rawList))
+		for _, item := range rawList {
+			domains = append(domains, item.Domain)
 		}
-		sendResponse(map[string]interface{}{
+		sendResponse(map[string]any{
 			"type":    "web_blocklist",
-			"payload": bl,
+			"payload": domains,
 		})
 	case "add_to_web_blocklist":
 		var domain string

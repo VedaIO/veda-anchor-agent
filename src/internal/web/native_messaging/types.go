@@ -24,6 +24,6 @@ type Request struct {
 
 // Response is a message sent to the browser extension.
 type Response struct {
-	Type    string      `json:"type"`
-	Payload interface{} `json:"payload"`
+	Type    string `json:"type"`
+	Payload any    `json:"payload"`
 }

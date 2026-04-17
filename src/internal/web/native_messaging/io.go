@@ -9,7 +9,7 @@ import (
 
 // sendResponse sends a JSON response to the browser extension via standard output.
 // It follows the native messaging protocol: a 4-byte length prefix followed by the JSON body.
-func sendResponse(msg interface{}) {
+func sendResponse(msg any) {
 	bytes, err := json.Marshal(msg)
 	if err != nil {
 		log.Printf("Error marshalling response: %v", err)

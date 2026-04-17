@@ -109,7 +109,7 @@ func Run() {
 
 // Stop sends a stopping message to the extension to prevent it from reconnecting.
 func Stop() {
-	sendResponse(map[string]interface{}{
+	sendResponse(map[string]any{
 		"type":    "stopping",
 		"payload": nil,
 	})

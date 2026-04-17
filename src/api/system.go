@@ -2,6 +2,9 @@ package api
 
 import (
 	"encoding/json"
+	"log"
+
+	"veda-anchor-agent/src/internal/platform/nativehost"
 )
 
 // --- Lifecycle ---
@@ -12,6 +15,10 @@ func (s *Server) Shutdown() error {
 }
 
 func (s *Server) Uninstall(password string) error {
+	// Clean up native host registration (user's HKCU registry keys)
+	if err := nativehost.Remove(); err != nil {
+		log.Printf("Failed to remove native host: %v", err)
+	}
 	_, err := s.engine.Request("Uninstall", map[string]string{"password": password})
 	return err
 }
