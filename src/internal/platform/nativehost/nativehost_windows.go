@@ -83,7 +83,7 @@ func CreateManifest(manifestPath, exePath, extensionId string) error {
 			"chrome-extension://gpaafgcbiejjpfdgmjglehboafdicdjb/", // Dev Extension ID
 		},
 		"allowed_extensions": []string{
-			"veda-anchor@vedaio.com",
+			"Veda@infraflakes.com",
 		},
 	}
 

@@ -3,6 +3,7 @@ package api
 import (
 	"encoding/json"
 	"veda-anchor-agent/src/internal/ipc"
+	"veda-anchor-agent/src/internal/platform/nativehost"
 	"veda-anchor-agent/src/internal/tracking"
 )
 
@@ -101,6 +102,14 @@ func (s *Server) Dispatch(method string, params json.RawMessage) ipc.Response {
 			return ipc.Response{Result: json.RawMessage(enriched)}
 		}
 		return ipc.Response{Result: raw}
+
+	case "RegisterExtension":
+		var p struct {
+			ID string `json:"id"`
+		}
+		json.Unmarshal(params, &p)
+		err = nativehost.RegisterExtension(p.ID)
+		result = true
 
 	// --- Everything else: forward to engine ---
 

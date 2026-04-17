@@ -13,6 +13,7 @@ import (
 	"veda-anchor-agent/src/internal/config"
 	"veda-anchor-agent/src/internal/ipc"
 	"veda-anchor-agent/src/internal/tracking"
+	"veda-anchor-agent/src/internal/web"
 	"veda-anchor-agent/src/internal/web/native_messaging"
 )
 
@@ -40,6 +41,11 @@ func main() {
 	}
 
 	log.Printf("=== VEDA ANCHOR AGENT STARTING ===")
+
+	// Register native messaging host (creates registry keys + manifest for Chrome/Edge/Firefox)
+	if err := web.EnsureExtensionInstalled(); err != nil {
+		log.Printf("Warning: Failed to register native messaging host: %v", err)
+	}
 
 	// Connect to Engine IPC (with retry)
 	var engineClient *ipc.EngineClient
